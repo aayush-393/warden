@@ -1,0 +1,42 @@
+version: 1
+mode: enforce
+
+listeners:
+  - type: stdio
+
+upstreams:
+  filesystem:
+    kind: mcp_stdio
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-filesystem", "/tmp/sandbox"]
+
+identity:
+  method: static
+  static_agent_id: dev-agent
+
+policy:
+  backend: cedar
+  address: "localhost:50051"
+  policy_dir: ./policies
+  fail_mode: closed
+  fail_mode_overrides:
+    - { server: filesystem, tool: list_directory, fail_mode: open }
+
+detectors:
+  - name: pii
+    address: "localhost:50052"
+    fail_mode: open
+  - name: injection
+    address: "localhost:50053"
+    directions: [response]
+
+approval:
+  address: "localhost:50054"
+  wait_timeout_s: 300
+  on_timeout: deny
+
+session_store:
+  type: memory
+
+audit:
+  sqlite_path: ./warden-audit.db
