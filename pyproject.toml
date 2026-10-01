@@ -1,0 +1,48 @@
+[project]
+name = "warden"
+version = "0.1.0"
+description = "Policy, privacy, and approvals for AI agents: a firewall for MCP and A2A traffic."
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "Aayush Chhikara", email = "iamaayush393@gmail.com" }]
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.8",
+    "pyyaml>=6.0",
+    "grpcio>=1.66",
+    "protobuf>=5.28",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "ruff>=0.6",
+    "pyright>=1.1.380",
+    "grpcio-tools>=1.66",
+    "types-pyyaml",
+    "types-protobuf",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["src/warden/gen"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.pyright]
+include = ["src", "tests"]
+exclude = ["src/warden/gen"]
+pythonVersion = "3.12"
+typeCheckingMode = "strict"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
