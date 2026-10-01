@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package warden.v1;
+
+import "warden/v1/common.proto";
+
+// A detector inspects an event and reports findings. It may also propose a
+// decision (e.g. MODIFY with a redacted payload); Warden merges proposals.
+service DetectorService {
+  rpc Inspect(InspectRequest) returns (InspectResponse);
+  rpc Describe(DescribeRequest) returns (DescribeResponse);
+}
+
+message InspectRequest {
+  Event event = 1;
+}
+
+enum Severity {
+  SEVERITY_UNSPECIFIED = 0;
+  SEVERITY_LOW = 1;
+  SEVERITY_MEDIUM = 2;
+  SEVERITY_HIGH = 3;
+  SEVERITY_CRITICAL = 4;
+}
+
+message Finding {
+  // Machine-readable category, e.g. "pii.email", "secret.aws_key", "injection.instruction_override".
+  string type = 1;
+  Severity severity = 2;
+  // 0.0 - 1.0
+  double confidence = 3;
+  // JSON-pointer-style path into the payload where the finding was located.
+  string location = 4;
+  string detail = 5;
+}
+
+message InspectResponse {
+  repeated Finding findings = 1;
+  // Optional. Unset means "no opinion"; Warden's policy decides from the findings.
+  Decision proposed_decision = 2;
+  // Taint labels the session should gain (e.g. "untrusted_content", "pii").
+  repeated string add_taint = 3;
+}
+
+message DescribeRequest {}
+
+message DescribeResponse {
+  string name = 1;
+  string version = 2;
+}

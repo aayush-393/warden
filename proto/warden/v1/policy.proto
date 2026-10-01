@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package warden.v1;
+
+import "warden/v1/common.proto";
+
+// Policy decision point, called once per event (like Envoy ext_authz).
+service PolicyService {
+  rpc Evaluate(EvaluateRequest) returns (EvaluateResponse);
+}
+
+message EvaluateRequest {
+  Event event = 1;
+}
+
+message EvaluateResponse {
+  Decision decision = 1;
+}
