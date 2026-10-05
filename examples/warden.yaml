@@ -3,6 +3,7 @@ mode: enforce
 
 listeners:
   - type: stdio
+    upstream: filesystem
 
 upstreams:
   filesystem:
@@ -37,6 +38,10 @@ approval:
 
 session_store:
   type: memory
+
+observability:
+  log_level: info
+  log_file: ./warden.log
 
 audit:
   sqlite_path: ./warden-audit.db
