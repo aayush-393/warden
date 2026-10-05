@@ -30,6 +30,8 @@ class FailMode(StrEnum):
 
 class StdioListener(_Model):
     type: Literal["stdio"] = "stdio"
+    # Name of the entry in `upstreams` this listener proxies to. Optional when there is only one.
+    upstream: str | None = None
 
 
 class HttpListener(_Model):
@@ -37,6 +39,9 @@ class HttpListener(_Model):
     protocol: Literal["mcp", "a2a"]
     host: str = "127.0.0.1"
     port: Annotated[int, Field(ge=1, le=65535)]
+    upstream: str | None = None
+    # Browser origins accepted in addition to localhost (DNS-rebinding protection).
+    allowed_origins: list[str] = Field(default_factory=list[str])
 
 
 Listener = Annotated[StdioListener | HttpListener, Field(discriminator="type")]
@@ -149,7 +154,11 @@ class Audit(_Model):
 
 
 class Observability(_Model):
+    # debug additionally logs full message payloads.
     log_level: Literal["debug", "info", "warning", "error"] = "info"
+    # Logs always go to stderr; set this to also keep them in a file. Useful in stdio mode,
+    # where the host application (e.g. Claude Desktop) may not surface stderr.
+    log_file: Path | None = None
     otlp_endpoint: str | None = None
 
 
@@ -178,8 +187,61 @@ class WardenConfig(_Model):
             raise ValueError(f"duplicate detector names: {sorted(dupes)}")
         return self
 
+    @model_validator(mode="after")
+    def _check_listeners(self) -> Self:
+        stdio = [ln for ln in self.listeners if isinstance(ln, StdioListener)]
+        if stdio and len(self.listeners) > 1:
+            # stdout carries the protocol, so a stdio listener owns the whole process.
+            raise ValueError("a stdio listener cannot be combined with other listeners")
+        if len(stdio) > 1:
+            raise ValueError("only one stdio listener is allowed")
+        for listener in self.listeners:
+            name = self.upstream_name(listener)
+            upstream = self.upstreams[name]
+            kind = "mcp" if isinstance(listener, StdioListener) else listener.protocol
+            if kind == "mcp" and isinstance(listener, StdioListener):
+                ok = isinstance(upstream, McpStdioUpstream)
+            elif kind == "mcp":
+                ok = isinstance(upstream, McpHttpUpstream)
+            else:
+                ok = isinstance(upstream, A2aUpstream)
+            if not ok:
+                raise ValueError(
+                    f"{listener.type} listener ({kind}) cannot proxy to upstream "
+                    f"{name!r} of kind {upstream.kind!r}"
+                )
+        return self
+
+    def upstream_name(self, listener: StdioListener | HttpListener) -> str:
+        """Resolve which upstream a listener targets (explicit, or the only one)."""
+        if listener.upstream is not None:
+            if listener.upstream not in self.upstreams:
+                raise ValueError(f"listener references unknown upstream {listener.upstream!r}")
+            return listener.upstream
+        if len(self.upstreams) != 1:
+            raise ValueError("listener must set `upstream` when several upstreams are configured")
+        return next(iter(self.upstreams))
+
 
 def load_config(path: str | Path) -> WardenConfig:
-    """Parse and validate a YAML config file. Raises pydantic.ValidationError on bad input."""
-    raw = yaml.safe_load(Path(path).read_text())
-    return WardenConfig.model_validate(raw)
+    """Parse and validate a YAML config file. Raises pydantic.ValidationError on bad input.
+
+    Relative paths inside the file are resolved against the file's own directory, not the
+    working directory: hosts like Claude Desktop launch Warden from an arbitrary cwd.
+    """
+    path = Path(path)
+    config = WardenConfig.model_validate(yaml.safe_load(path.read_text()))
+    base = path.resolve().parent
+
+    def resolve(p: Path) -> Path:
+        return p if p.is_absolute() else base / p
+
+    obs, policy, identity = config.observability, config.policy, config.identity
+    if obs.log_file:
+        obs.log_file = resolve(obs.log_file)
+    if policy.policy_dir:
+        policy.policy_dir = resolve(policy.policy_dir)
+    if identity.mtls_ca_file:
+        identity.mtls_ca_file = resolve(identity.mtls_ca_file)
+    config.audit.sqlite_path = resolve(config.audit.sqlite_path)
+    return config
