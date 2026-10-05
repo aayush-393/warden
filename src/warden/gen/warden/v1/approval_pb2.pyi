@@ -18,7 +18,7 @@ APPROVAL_OUTCOME_APPROVED: ApprovalOutcome
 APPROVAL_OUTCOME_REJECTED: ApprovalOutcome
 APPROVAL_OUTCOME_TIMED_OUT: ApprovalOutcome
 
-class ApprovalRequest(_message.Message):
+class RequestApprovalRequest(_message.Message):
     __slots__ = ("event", "reason", "rule_id", "wait_timeout_s")
     EVENT_FIELD_NUMBER: _ClassVar[int]
     REASON_FIELD_NUMBER: _ClassVar[int]
@@ -30,7 +30,7 @@ class ApprovalRequest(_message.Message):
     wait_timeout_s: int
     def __init__(self, event: _Optional[_Union[_common_pb2.Event, _Mapping]] = ..., reason: _Optional[str] = ..., rule_id: _Optional[str] = ..., wait_timeout_s: _Optional[int] = ...) -> None: ...
 
-class ApprovalResponse(_message.Message):
+class RequestApprovalResponse(_message.Message):
     __slots__ = ("outcome", "approver", "comment")
     OUTCOME_FIELD_NUMBER: _ClassVar[int]
     APPROVER_FIELD_NUMBER: _ClassVar[int]

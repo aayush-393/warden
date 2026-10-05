@@ -7,10 +7,10 @@ import "warden/v1/common.proto";
 // Human-in-the-loop approval. The call parks until a human responds or the
 // request times out; Warden resumes or rejects the original event accordingly.
 service ApprovalService {
-  rpc RequestApproval(ApprovalRequest) returns (ApprovalResponse);
+  rpc RequestApproval(RequestApprovalRequest) returns (RequestApprovalResponse);
 }
 
-message ApprovalRequest {
+message RequestApprovalRequest {
   Event event = 1;
   // Why the call was escalated, and by which rule.
   string reason = 2;
@@ -25,7 +25,7 @@ enum ApprovalOutcome {
   APPROVAL_OUTCOME_TIMED_OUT = 3;
 }
 
-message ApprovalResponse {
+message RequestApprovalResponse {
   ApprovalOutcome outcome = 1;
   string approver = 2;
   string comment = 3;

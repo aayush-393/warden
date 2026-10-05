@@ -38,8 +38,8 @@ class ApprovalServiceStub:
         """
         self.RequestApproval = channel.unary_unary(
                 '/warden.v1.ApprovalService/RequestApproval',
-                request_serializer=warden_dot_v1_dot_approval__pb2.ApprovalRequest.SerializeToString,
-                response_deserializer=warden_dot_v1_dot_approval__pb2.ApprovalResponse.FromString,
+                request_serializer=warden_dot_v1_dot_approval__pb2.RequestApprovalRequest.SerializeToString,
+                response_deserializer=warden_dot_v1_dot_approval__pb2.RequestApprovalResponse.FromString,
                 _registered_method=True)
 
 
@@ -59,8 +59,8 @@ def add_ApprovalServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'RequestApproval': grpc.unary_unary_rpc_method_handler(
                     servicer.RequestApproval,
-                    request_deserializer=warden_dot_v1_dot_approval__pb2.ApprovalRequest.FromString,
-                    response_serializer=warden_dot_v1_dot_approval__pb2.ApprovalResponse.SerializeToString,
+                    request_deserializer=warden_dot_v1_dot_approval__pb2.RequestApprovalRequest.FromString,
+                    response_serializer=warden_dot_v1_dot_approval__pb2.RequestApprovalResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -90,8 +90,8 @@ class ApprovalService:
             request,
             target,
             '/warden.v1.ApprovalService/RequestApproval',
-            warden_dot_v1_dot_approval__pb2.ApprovalRequest.SerializeToString,
-            warden_dot_v1_dot_approval__pb2.ApprovalResponse.FromString,
+            warden_dot_v1_dot_approval__pb2.RequestApprovalRequest.SerializeToString,
+            warden_dot_v1_dot_approval__pb2.RequestApprovalResponse.FromString,
             options,
             channel_credentials,
             insecure,

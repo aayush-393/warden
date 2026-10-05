@@ -25,19 +25,19 @@ _sym_db = _symbol_database.Default()
 from warden.gen.warden.v1 import common_pb2 as warden_dot_v1_dot_common__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x18warden/v1/approval.proto\x12\twarden.v1\x1a\x16warden/v1/common.proto\"k\n\x0f\x41pprovalRequest\x12\x1f\n\x05\x65vent\x18\x01 \x01(\x0b\x32\x10.warden.v1.Event\x12\x0e\n\x06reason\x18\x02 \x01(\t\x12\x0f\n\x07rule_id\x18\x03 \x01(\t\x12\x16\n\x0ewait_timeout_s\x18\x04 \x01(\r\"b\n\x10\x41pprovalResponse\x12+\n\x07outcome\x18\x01 \x01(\x0e\x32\x1a.warden.v1.ApprovalOutcome\x12\x10\n\x08\x61pprover\x18\x02 \x01(\t\x12\x0f\n\x07\x63omment\x18\x03 \x01(\t*\x91\x01\n\x0f\x41pprovalOutcome\x12 \n\x1c\x41PPROVAL_OUTCOME_UNSPECIFIED\x10\x00\x12\x1d\n\x19\x41PPROVAL_OUTCOME_APPROVED\x10\x01\x12\x1d\n\x19\x41PPROVAL_OUTCOME_REJECTED\x10\x02\x12\x1e\n\x1a\x41PPROVAL_OUTCOME_TIMED_OUT\x10\x03\x32]\n\x0f\x41pprovalService\x12J\n\x0fRequestApproval\x12\x1a.warden.v1.ApprovalRequest\x1a\x1b.warden.v1.ApprovalResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x18warden/v1/approval.proto\x12\twarden.v1\x1a\x16warden/v1/common.proto\"r\n\x16RequestApprovalRequest\x12\x1f\n\x05\x65vent\x18\x01 \x01(\x0b\x32\x10.warden.v1.Event\x12\x0e\n\x06reason\x18\x02 \x01(\t\x12\x0f\n\x07rule_id\x18\x03 \x01(\t\x12\x16\n\x0ewait_timeout_s\x18\x04 \x01(\r\"i\n\x17RequestApprovalResponse\x12+\n\x07outcome\x18\x01 \x01(\x0e\x32\x1a.warden.v1.ApprovalOutcome\x12\x10\n\x08\x61pprover\x18\x02 \x01(\t\x12\x0f\n\x07\x63omment\x18\x03 \x01(\t*\x91\x01\n\x0f\x41pprovalOutcome\x12 \n\x1c\x41PPROVAL_OUTCOME_UNSPECIFIED\x10\x00\x12\x1d\n\x19\x41PPROVAL_OUTCOME_APPROVED\x10\x01\x12\x1d\n\x19\x41PPROVAL_OUTCOME_REJECTED\x10\x02\x12\x1e\n\x1a\x41PPROVAL_OUTCOME_TIMED_OUT\x10\x03\x32k\n\x0f\x41pprovalService\x12X\n\x0fRequestApproval\x12!.warden.v1.RequestApprovalRequest\x1a\".warden.v1.RequestApprovalResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'warden.v1.approval_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_APPROVALOUTCOME']._serialized_start=273
-  _globals['_APPROVALOUTCOME']._serialized_end=418
-  _globals['_APPROVALREQUEST']._serialized_start=63
-  _globals['_APPROVALREQUEST']._serialized_end=170
-  _globals['_APPROVALRESPONSE']._serialized_start=172
-  _globals['_APPROVALRESPONSE']._serialized_end=270
-  _globals['_APPROVALSERVICE']._serialized_start=420
-  _globals['_APPROVALSERVICE']._serialized_end=513
+  _globals['_APPROVALOUTCOME']._serialized_start=287
+  _globals['_APPROVALOUTCOME']._serialized_end=432
+  _globals['_REQUESTAPPROVALREQUEST']._serialized_start=63
+  _globals['_REQUESTAPPROVALREQUEST']._serialized_end=177
+  _globals['_REQUESTAPPROVALRESPONSE']._serialized_start=179
+  _globals['_REQUESTAPPROVALRESPONSE']._serialized_end=284
+  _globals['_APPROVALSERVICE']._serialized_start=434
+  _globals['_APPROVALSERVICE']._serialized_end=541
 # @@protoc_insertion_point(module_scope)
